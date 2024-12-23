@@ -5,6 +5,7 @@ import ProfileMenu from './ProfileMenu';
 import useStore from '../useStore'; // Import Zustand store
 import EmailTable from './EmailTable'; // Import the new EmailTable component
 import { Inbox, Send, Archive, PencilOff, Trash2, History, FolderX, Notebook, FileBox } from 'lucide-react'; // Import all necessary icons 
+import { API_BASE_URL } from '../api/config';
 
 const EmailList = ({ view }) => {
   const { accessToken } = useStore((state) => state); // Get accessToken from Zustand store
@@ -25,7 +26,7 @@ const EmailList = ({ view }) => {
             return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/folders/${folderId}/messages`, {
+        const response = await fetch(`${API_BASE_URL}/api/folders/${folderId}/messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ const EmailList = ({ view }) => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/emails', {
+        const response = await fetch(`${API_BASE_URL}/api/emails`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -133,7 +134,7 @@ const EmailList = ({ view }) => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/folders', {
+        const response = await fetch(`${API_BASE_URL}/api/folders`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

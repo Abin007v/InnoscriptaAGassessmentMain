@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import useStore from '../useStore';  
 import { PDFDocument } from 'pdf-lib'; // Import PDFDocument from pdf-lib
+import { API_BASE_URL } from '../api/config';
 
 const EmailView = () => {
   const { setEmail } = useStore((state) => state); // Get setEmail from Zustand store
@@ -45,21 +46,20 @@ const EmailView = () => {
         return;
       }
 
-      const response = await fetch(
-        `https://graph.microsoft.com/v1.0/me/messages/${emailId}/attachments`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`, // Pass your access token
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/attachments/${emailId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ accessToken }),
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch attachments');
       }
 
       const data = await response.json();
-      setAttachments(data.value); // Set the attachments in state
+      setAttachments(data.attachments);
     } catch (error) {
       console.error('Error fetching attachments:', error);
     }

@@ -7,7 +7,7 @@ export const msalConfig={
   {
     clientId:'88ae7529-44dc-4b77-9773-a23cc03283c5',
     authority:'https://login.microsoftonline.com/organizations',
-    redirectUri:'/',
+    redirectUri:'http://localhost:3000',
     postLogoutRedirectUri:'/',
     navigateToLoginRequestUri:false,
   },

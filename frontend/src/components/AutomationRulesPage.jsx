@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../api/config';
 
 const AutomationRulesPage = () => {
   const [ruleName, setRuleName] = useState('');
@@ -43,6 +44,17 @@ const AutomationRulesPage = () => {
     setActionType('move_to_folder');
     setActionValue('');
     setPriority(0);
+  };
+
+  const fetchRules = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/rules`, {
+        // ... rest of the fetch configuration
+      });
+      // ... rest of the function
+    } catch (error) {
+      console.error('Error fetching rules:', error);
+    }
   };
 
   return (
