@@ -1,0 +1,80 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #0F4F97;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #2186B8;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+button {
+  background-color: #2186B8;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0F4F97;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 256px; /* Fixed width for larger screens */
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 192px; /* Adjust width for small screens */
+  }
+
+  .sidebar img {
+    width: 50px; /* Reduce logo size */
+    height: 50px; /* Reduce logo size */
+  }
+}
+
+/* Hide text on mobile */
+@media (max-width: 768px) {
+  .sidebar span {
+    display: none; /* Hide text */
+  }
+}
+
+@media (max-width: 768px) {
+  .compose-button {
+    padding: 8px 12px; /* Adjust padding for smaller screens */
+  }
+}
