@@ -6,6 +6,7 @@
     "@azure/msal-browser": "^3.27.0",
     "@azure/msal-node": "^2.16.2",
     "@azure/msal-react": "^2.2.0",
+    "@headlessui/react": "^1.7.18",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

@@ -1,52 +1,65 @@
 import React from 'react';
-import { Star as StarFilled, Check, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const EmailTable = ({ emails }) => {
+const EmailTable = ({ emails = [] }) => {
   const navigate = useNavigate();
 
-  const handleItemClick = (e, email) => {
-    if (e.target.closest('button')) {
-      e.stopPropagation(); // Prevent the click from propagating if a button is clicked
-      return;
-    }
-    navigate(`/email/${email.id}`, { state: { email } }); // Navigate to the email view page
+  if (!emails || emails.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-500">No emails to display</p>
+      </div>
+    );
+  }
+
+  const handleEmailClick = (email) => {
+    navigate(`/email/${email.id}`, { state: { email } });
   };
 
-  
   return (
-    <div>
-
-
-      {/* Email List Items */}
-      <div>
-        {emails.map((email) => (
-          <div
-            key={email.id}
-            className={`flex items-center p-3 border-b border-gray-200 hover:bg-blue-100 cursor-pointer transition duration-200 ${email.selected ? 'bg-blue-100' : ''}`}
-            onClick={(e) => handleItemClick(e, email)}
-          > 
-            <div className="flex-1">
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="font-semibold text-gray-800">{email.sender.name}</span>
-                  <span className="text-sm text-gray-600">{email.sender.address}</span>
-                </div>
-                <span className="text-sm text-gray-500">{email.time}</span>
-              </div>
-              <p className="text-gray-700 text-base">{email.subject}</p>
-              <p className="text-gray-500 text-xs">{email.preview.slice(0, 50) + (email.preview.length > 50 ? '...' : '')}</p>
-            </div>
-            <button 
-              className={`ml-4 flex items-center space-x-2 text-sm cursor-pointer`}
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              From
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Subject
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Date
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {emails.map((email) => (
+            <tr
+              key={email.id}
+              onClick={() => handleEmailClick(email)}
+              className="hover:bg-gray-50 cursor-pointer"
             >
-              <StarFilled
-                className={`h-4 w-4 ${email.starred ? 'text-yellow-500 fill-current' : 'text-gray-300'}`}
-              />
-            </button>
-          </div>
-        ))}
-      </div>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900">
+                  {email.sender?.name || 'Unknown'}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {email.sender?.address || 'No email'}
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="text-sm text-gray-900">{email.subject}</div>
+                <div className="text-sm text-gray-500">
+                  {email.preview?.slice(0, 100)}...
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {email.time}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

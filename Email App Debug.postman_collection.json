@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "67e0f038-4c82-4f7d-b8c1-e2022ba21ea0",
+		"name": "Email App Debug",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27671905"
+	},
+	"item": [
+		{
+			"name": "Get All Indices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/indices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"indices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Index Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/index/email_messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"index",
+						"email_messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Emails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/user/puTO95MBOYchxDQCd0Iq/emails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"user",
+						"puTO95MBOYchxDQCd0Iq",
+						"emails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Mailboxes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/user/{{userId}}/mailboxes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"user",
+						"{{userId}}",
+						"mailboxes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test Elasticsearch DB connection",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get email_messages Index Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/index/email_messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"index",
+						"email_messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get mailboxes Index Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/index/mailboxes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"index",
+						"mailboxes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get users Index Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/debug/index/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"debug",
+						"index",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
