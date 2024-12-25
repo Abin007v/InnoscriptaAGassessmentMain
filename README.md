@@ -108,11 +108,11 @@ run the bellow command to create the env files.
 
 On Windows:
 ```bash
-setup.bat
+.\setup.bat
 ```
 
 On macOS/Linux:
 ```bash
-setup.sh
+./setup.sh
 ```
 
