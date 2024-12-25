@@ -5,7 +5,8 @@ const corsOptions = {
     'Content-Type',
     'Authorization',
     'Last-Sync-Time',
-    'Force-Sync'
+    'Force-Sync',
+    'force-sync'
   ],
   exposedHeaders: ['Last-Sync-Time'],
   credentials: true,

@@ -1,34 +1,27 @@
-class User {
-  static async createIndex(esClient) {
-    try {
-      const exists = await esClient.indices.exists({ index: 'users' });
-      if (!exists) {
-        await esClient.indices.create({
-          index: 'users',
-          body: {
-            settings: {
-              number_of_shards: 1,
-              number_of_replicas: 1
-            },
-            mappings: {
-              properties: {
-                email: { type: 'keyword' },
-                password: { type: 'keyword' },
-                createdAt: { type: 'date' },
-                lastLogin: { type: 'date' },
-                outlookEmail: { type: 'keyword' },
-                isActive: { type: 'boolean' }
-              }
-            }
-          }
-        });
-        console.log('Users index created successfully');
+import { BaseModel } from './BaseModel.js';
+
+class UserModel extends BaseModel {
+  static indexName = 'users';
+
+  static mappings = {
+    email: { type: 'keyword' },
+    password: { type: 'keyword' },
+    createdAt: { type: 'date' },
+    lastLogin: { type: 'date' },
+    isActive: { type: 'boolean' },
+    outlookData: {
+      properties: {
+        email: { type: 'keyword' },
+        name: { type: 'text' },
+        accessToken: { type: 'keyword' },
+        lastSync: { type: 'date' }
       }
-    } catch (error) {
-      console.error('Error creating users index:', error);
-      throw error;
     }
+  };
+
+  static async setup() {
+    await this.createIndex(this.indexName, this.mappings);
   }
 }
 
-export { User }; 
+export { UserModel }; 
