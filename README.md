@@ -149,14 +149,14 @@ ELASTICSEARCH_URL=http://elasticsearch:9200
 
 ### Frontend  
 
-**Create a `.env` file in the `frontend` directory** and highlight the variables:  
+**Create a `.env` file in the `frontend` directory** and add the variables:  
 
 ```plaintext
 REACT_APP_PORT=3001  
 REACT_APP_API_URL=http://localhost:5001  
 ```  
 
-**create a `.env.docker` file in the `frontend` directory** and highlight the variables:  
+**create a `.env.docker` file in the `frontend` directory** and add the variables:  
 
 ```plaintext
 REACT_APP_PORT=3001  
