@@ -6,11 +6,10 @@ import corsOptions from '../config/corsConfig.js';
 
 const router = express.Router();
 
-// Apply CORS options to specific routes
-router.options('/:folderId/emails', cors(corsOptions)); // Handle OPTIONS preflight
+router.options('/:folderId/emails', cors(corsOptions));
 router.get('/:folderId/emails', cors(corsOptions), validateToken, FolderController.getEmailsByFolder);
 
-router.options('/', cors(corsOptions)); // Handle OPTIONS preflight
+router.options('/', cors(corsOptions));
 router.get('/', cors(corsOptions), validateToken, FolderController.getFolders);
 
 export default router; 

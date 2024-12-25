@@ -10,19 +10,15 @@ import { setupModels } from './models/index.js';
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/emails', emailRoutes);
 app.use('/api/folders', folderRoutes);
 
-// Error handling
 app.use(errorHandler);
 
-// Start server
 const startServer = async () => {
   try {
     await setupModels();
