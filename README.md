@@ -156,7 +156,7 @@ REACT_APP_PORT=3001
 REACT_APP_API_URL=http://localhost:5001  
 ```  
 
-**OR, for Docker, create a `.env` file in the `frontend` directory** and highlight the variables:  
+**create a `.env.docker` file in the `frontend` directory** and highlight the variables:  
 
 ```plaintext
 REACT_APP_PORT=3001  
