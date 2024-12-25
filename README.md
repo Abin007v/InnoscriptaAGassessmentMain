@@ -22,10 +22,9 @@ cd [repository-name]
 ### 2. Install Dependencies  
 
 ```bash
-npm install
+npm run install-all
 ```  
-
-This command utilizes the global `package.json` configuration with `Concurrently` to manage both applications.  
+This command will install the required dependencies for both the frontend and backend. The command utilizes the global `package.json` configuration with `npm install` to install the dependencies in both applications.  
 
 ### 3. Build and Run the Application in docker environment 
 
@@ -34,12 +33,11 @@ Launch both frontend and backend services:
 ```bash
 docker-compose build
 
-docker-compose up
+docker-compose up -d
 ```  
+ 
 
-This command utilizes the global `package.json` configuration with `Concurrently` to manage both applications.  
-
-The application will be available at: [http://localhost:3000](http://localhost:3000)  
+The application will be running at 3000 port in docker environment.
 
 ---
 
@@ -47,7 +45,7 @@ The application will be available at: [http://localhost:3000](http://localhost:3
 
 ### 1. Account Setup  
 
-1. Navigate to [http://localhost:3000](http://localhost:3000)  
+1. Navigate to docker and click on frontend container to access the application.
 2. Create a new account using the registration form  
 3. Proceed to Microsoft account linking  
 
