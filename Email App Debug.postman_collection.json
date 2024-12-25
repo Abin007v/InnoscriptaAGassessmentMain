@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "67e0f038-4c82-4f7d-b8c1-e2022ba21ea0",
-		"name": "Email App Debug",
+		"_postman_id": "4c895b8b-e124-465d-8dd3-4713d7e3015b",
+		"name": "elasticsearch db debug routes",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27671905"
 	},
 	"item": [
 		{
-			"name": "Get All Indices",
+			"name": "get all indices",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -28,75 +28,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Index Data",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5001/api/debug/index/email_messages",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"debug",
-						"index",
-						"email_messages"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get User Emails",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5001/api/debug/user/puTO95MBOYchxDQCd0Iq/emails",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"debug",
-						"user",
-						"puTO95MBOYchxDQCd0Iq",
-						"emails"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get User Mailboxes",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5001/api/debug/user/{{userId}}/mailboxes",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"debug",
-						"user",
-						"{{userId}}",
-						"mailboxes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Test Elasticsearch DB connection",
+			"name": "check db heath",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -116,12 +48,12 @@
 			"response": []
 		},
 		{
-			"name": "Get email_messages Index Data",
+			"name": "get all users",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/api/debug/index/email_messages",
+					"raw": "http://localhost:5001/api/debug/index/users",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -131,14 +63,14 @@
 						"api",
 						"debug",
 						"index",
-						"email_messages"
+						"users"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get mailboxes Index Data",
+			"name": "get all mailbox",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -160,12 +92,12 @@
 			"response": []
 		},
 		{
-			"name": "Get users Index Data",
+			"name": "get all emails",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5001/api/debug/index/users",
+					"raw": "http://localhost:5001/api/debug/index/email_messages",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -175,7 +107,7 @@
 						"api",
 						"debug",
 						"index",
-						"users"
+						"email_messages"
 					]
 				}
 			},
