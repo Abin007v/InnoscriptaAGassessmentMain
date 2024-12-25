@@ -1,4 +1,3 @@
-Here’s the updated README with the requested highlighting of the `.env` variables for clarity:
 
 ---
 
