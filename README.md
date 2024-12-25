@@ -42,7 +42,7 @@ Verify Elasticsearch is running by accessing: [http://localhost:9200](http://loc
 Launch both frontend and backend services:  
 
 ```bash
-npm run dev
+npm start
 ```  
 
 This command utilizes the global `package.json` configuration with `Concurrently` to manage both applications.  
