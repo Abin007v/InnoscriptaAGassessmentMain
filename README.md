@@ -26,7 +26,24 @@ npm run install-all
 ```  
 This command will install the required dependencies for both the frontend and backend. The command utilizes the global `package.json` configuration with `npm install` to install the dependencies in both applications.  
 
-### 3. Build and Run the Application in docker environment 
+
+### 3. Setup Environment Variables  
+
+run the bellow command to create the env files.
+
+
+On Windows:
+```bash
+.\setup.bat
+```
+
+On macOS/Linux:
+```bash
+./setup.sh
+```
+
+
+### 4. Build and Run the Application in docker environment 
 
 Launch both frontend and backend services:  
 
@@ -101,18 +118,4 @@ The application uses:
 
 ---
 
-## Environment Variables  
-
-run the bellow command to create the env files.
-
-
-On Windows:
-```bash
-.\setup.bat
-```
-
-On macOS/Linux:
-```bash
-./setup.sh
-```
 
