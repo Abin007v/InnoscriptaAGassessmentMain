@@ -80,11 +80,7 @@ Before linking your Microsoft account, ensure the following Graph API permission
 - `User.Read`  
 - `offline_access`  
 
-### 3. Microsoft Account Integration  
-
-1. After account creation, you'll be prompted to link your Microsoft account  
-2. Review and consent to the requested permissions  
-3. Complete the authentication process  
+ 
 
 ---
 
