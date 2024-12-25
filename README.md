@@ -103,60 +103,16 @@ The application uses:
 
 ## Environment Variables  
 
-### Backend  
+run the bellow command to create the env files.
 
-**Create a `.env` file in the `backend` directory** and add the following variables:  
 
-```plaintext
-# Azure AD Configuration
-AZURE_CLIENT_ID=88ae7529-44dc-4b77-9773-a23cc03283c5
-AZURE_TENANT_ID=d25e697e-9987-4146-87ba-800be6fd457c
-AZURE_CLIENT_SECRET=iri8Q~fHAIsaSebR68Hrb97nSUxrsXO.-FXxxa4m
-REDIRECT_URI=http://localhost:3001
+On Windows:
+```bash
+setup.bat
+```
 
-# Frontend URL
-FRONTEND_URL=http://localhost:3000
+On macOS/Linux:
+```bash
+setup.sh
+```
 
-# Session Secret
-SESSION_SECRET=Helloworld
-
-# Server Port
-PORT=5001
-
-# Elasticsearch URL
-ELASTICSEARCH_URL=http://localhost:9200
-
-CORS_ORIGIN=http://localhost:3000
-
-# Redis Configuration
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-```  
-
-**Create a `.env.docker` file in the `backend` directory** and add the following variables:  
-
-```plaintext
-PORT=5000
-ELASTICSEARCH_URL=http://elasticsearch:9200
-```  
-
-### Frontend  
-
-**Create a `.env` file in the `frontend` directory** and add the variables:  
-
-```plaintext
-REACT_APP_PORT=3000
-REACT_APP_API_URL=http://localhost:5001  
-```  
-
-**create a `.env.docker` file in the `frontend` directory** and add the variables:  
-
-```plaintext
-REACT_APP_PORT=3001
-REACT_APP_API_URL=http://backend:5001 
-```  
-
----
-
-This structure ensures clarity, highlighting the `.env` variables for easy setup and differentiation between local and Docker configurations.
