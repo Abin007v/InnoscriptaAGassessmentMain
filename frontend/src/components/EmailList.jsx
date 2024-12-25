@@ -1,169 +1,169 @@
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import EmailSidebar from './EmailSidebar';
-import ProfileMenu from './ProfileMenu';
-import useStore from '../useStore';
-import EmailTable from './EmailTable';
-import { API_BASE_URL } from '../api/config';
+import React, { useEffect, useCallback, useRef } from 'react';
+import { useMsal } from '@azure/msal-react';
+import useSyncStore from '../stores/syncStore';
+import EmailItem from './EmailItem';
+import SyncStatus from './SyncStatus';
+import { API_BASE_URL } from '../config';
+import { Loader2 } from 'lucide-react';
+import { getAccessToken } from '../utils/auth';
 
-const EmailList = ({ view }) => {
-  const navigate = useNavigate();
-  const [emails, setEmails] = useState([]);
-  const [folders, setFolders] = useState([]);
-  const [activeView, setActiveView] = useState('inbox');
-  const { accessToken } = useStore((state) => state);
-  const userId = sessionStorage.getItem('userId');
-  const outlookEmail = sessionStorage.getItem('outlookEmail');
+const EmailList = () => {
+  const { instance } = useMsal();
+  const { emails, isLoading, error, selectedFolderId } = useSyncStore();
+  const abortControllerRef = useRef(null);
 
-  const formatEmailData = (email) => ({
-    id: email.id,
-    sender: {
-      name: email.from?.emailAddress?.name || 
-            email.sender?.name ||
-            'Unknown Sender',
-      address: email.from?.emailAddress?.address || 
-               email.sender?.address ||
-               'No Address'
-    },
-    subject: email.subject || 'No Subject',
-    preview: email.bodyPreview || email.body?.content || '',
-    body: email.body?.content || '',
-    time: new Date(email.receivedDateTime || email.sentDateTime || Date.now()).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    })
-  });
+  const fetchEmails = useCallback(async (force = false) => {
+    if (!selectedFolderId) return;
 
-  const formatEmails = (rawEmails) => {
-    if (!Array.isArray(rawEmails)) {
-      console.error('Expected array of emails, got:', typeof rawEmails);
-      return [];
+    // Cancel any ongoing requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
-    return rawEmails.map(formatEmailData);
-  };
+    abortControllerRef.current = new AbortController();
 
-  const fetchEmails = async () => {
     try {
-      if (!accessToken || !userId || !outlookEmail) {
-        console.error('Missing required credentials');
-        navigate('/');
-        return;
+      console.log('🔄 [Frontend] Syncing emails for folder:', selectedFolderId, force ? '(force)' : '');
+      useSyncStore.getState().setLoading(true);
+      useSyncStore.getState().setError(null);
+      
+      const accessToken = await getAccessToken(instance);
+      if (!accessToken) {
+        throw new Error('No access token found');
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/emails`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accessToken,
-          userId,
-          outlookEmail
-        }),
+      const endpoint = `${API_BASE_URL}/api/folders/${selectedFolderId}/emails`;
+      console.log('📡 [Frontend] Fetching from:', endpoint);
+
+      const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      };
+
+      if (force) {
+        headers['Force-Sync'] = 'true';
+      }
+
+      const response = await fetch(endpoint, {
+        headers,
+        signal: abortControllerRef.current.signal
       });
 
       if (!response.ok) {
         throw new Error('Failed to fetch emails');
       }
 
-      const data = await response.json();
-      setEmails(formatEmails(data.emails));
+      const { data } = await response.json();
+      console.log('📥 [Frontend] Received emails for folder:', selectedFolderId, 'count:', data?.length || 0);
+      
+      // Only update if this is still the current folder
+      if (selectedFolderId === useSyncStore.getState().selectedFolderId) {
+        useSyncStore.getState().setEmails(Array.isArray(data) ? data : []);
+        useSyncStore.getState().setLoading(false);
+        useSyncStore.getState().setLastSyncTime(new Date().toISOString());
+      }
     } catch (error) {
-      console.error('Error fetching emails:', error);
-    }
-  };
-
-  const fetchFolders = async () => {
-    try {
-      if (!accessToken || !userId || !outlookEmail) {
-        console.error('Missing required credentials');
-        navigate('/');
+      if (error.name === 'AbortError') {
+        console.log('🛑 [Frontend] Request cancelled for folder:', selectedFolderId);
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/folders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accessToken,
-          userId,
-          outlookEmail
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch folders');
+      console.error('❌ [Frontend] Sync error:', error);
+      if (selectedFolderId === useSyncStore.getState().selectedFolderId) {
+        useSyncStore.getState().setError(error.message);
+        useSyncStore.getState().setLoading(false);
       }
-
-      const data = await response.json();
-      setFolders(data.value);
-    } catch (error) {
-      console.error('Error fetching folders:', error);
     }
-  };
+  }, [selectedFolderId, instance]);
 
-  const fetchEmailsByFolder = async (folderId) => {
-    try {
-      if (!accessToken || !userId || !outlookEmail) {
-        console.error('Missing required credentials');
-        navigate('/');
-        return;
-      }
+  // Handle manual sync
+  const handleSync = useCallback(() => {
+    console.log('🔄 [Frontend] Manual sync triggered');
+    fetchEmails(true);
+  }, [fetchEmails]);
 
-      const response = await fetch(`${API_BASE_URL}/api/folders/${folderId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accessToken,
-          userId,
-          outlookEmail
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch folder messages');
-      }
-
-      const data = await response.json();
-      const emailsToFormat = data.value || data.emails || [];
-      setEmails(formatEmails(emailsToFormat));
-    } catch (error) {
-      console.error('Error fetching folder messages:', error);
-    }
-  };
-
+  // Fetch emails when folder changes
   useEffect(() => {
-    if (!accessToken) {
-      navigate('/');
-      return;
+    if (selectedFolderId) {
+      console.log('📂 [Frontend] Folder changed, fetching emails for:', selectedFolderId);
+      fetchEmails();
     }
-    fetchEmails();
-    fetchFolders();
-  }, [accessToken, userId, outlookEmail]);
 
-  const handleFolderSelect = (folderId) => {
-    fetchEmailsByFolder(folderId);
-  };
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [selectedFolderId, fetchEmails]);
 
-  return (
-    <div className="flex h-screen bg-gray-100">
-      <EmailSidebar 
-        folders={folders}
-        activeView={activeView}
-        setActiveView={setActiveView}
-        onFolderSelect={fetchEmailsByFolder}
-      />
-      <div className="flex-1 flex flex-col">
-        <div className="flex justify-end items-center p-4 border-b border-gray-200 bg-[#F2F8FE] shadow-sm sm:pl-[5rem]">
-          <ProfileMenu />
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          <p className="text-sm text-gray-500">Loading emails...</p>
         </div>
-        <div className='sm:pl-[4rem] lg:pl-[1rem]'>
-          <EmailTable emails={emails} />
+      </div>
+    );
+  }
+
+  // No folder selected
+  if (!selectedFolderId) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-gray-500">Select a folder to view emails</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">Error: {error}</div>
+          <button 
+            onClick={fetchEmails}
+            className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!emails || emails.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500">No emails found in this folder</p>
+          <button 
+            onClick={fetchEmails}
+            className="mt-4 px-4 py-2 text-sm text-blue-600 hover:text-blue-700"
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Email list
+  return (
+    <div className="h-full flex flex-col">
+      <SyncStatus onSync={handleSync} />
+      <div className="flex-1 overflow-auto">
+        <div className="max-w-4xl mx-auto py-6 px-4">
+          <div className="bg-white shadow rounded-lg divide-y">
+            {emails.map(email => (
+              <EmailItem 
+                key={email.id || email.messageId} 
+                email={email} 
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

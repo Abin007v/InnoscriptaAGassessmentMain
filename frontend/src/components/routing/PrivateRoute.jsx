@@ -1,17 +1,12 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useMsal } from '@azure/msal-react';
-import useStore from '../../useStore';
 
-const PrivateRoute = () => {
-  const { instance } = useMsal();
-  const accessToken = useStore((state) => state.accessToken);
-  
-  if (!instance.getActiveAccount() || !accessToken) {
-    return <Navigate to="/" />;
-  }
+const PrivateRoute = ({ children }) => {
+  const { accounts } = useMsal();
+  const isAuthenticated = accounts.length > 0 && sessionStorage.getItem('accessToken');
 
-  return <Outlet />;
+  return isAuthenticated ? children : <Navigate to="/" />;
 };
 
 export default PrivateRoute; 

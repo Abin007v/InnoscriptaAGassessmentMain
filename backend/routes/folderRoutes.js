@@ -1,10 +1,12 @@
-import { Router } from 'express';
-import { FolderController } from '../controllers/folderController.js';
+import express from 'express';
+import FolderController from '../controllers/folderController.js';
 import { validateToken } from '../middleware/auth.js';
+import cors from 'cors';
+import corsOptions from '../config/corsConfig.js';
 
-const router = Router();
+const router = express.Router();
 
-router.post('/folders', validateToken, FolderController.getFolders);
-router.post('/folders/:folderId/messages', validateToken, FolderController.getFolderMessages);
+router.get('/', cors(corsOptions), validateToken, FolderController.getFolders);
+router.get('/:folderId/emails', cors(corsOptions), validateToken, FolderController.getEmailsByFolder);
 
 export default router; 

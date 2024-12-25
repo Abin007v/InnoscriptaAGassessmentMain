@@ -1,45 +1,52 @@
 import { FolderService } from '../services/folderService.js';
 
-export class FolderController {
+class FolderController {
   static async getFolders(req, res) {
     try {
-      const { accessToken, userId, outlookEmail } = req.body;
+      const token = req.token;
+      const folders = await FolderService.getFolders(token);
       
-      if (!accessToken || !userId || !outlookEmail) {
-        return res.status(400).json({ 
-          message: "Missing required parameters" 
-        });
-      }
-
-      const folders = await FolderService.fetchFolders(accessToken, userId, outlookEmail);
-      res.status(200).json(folders);
+      res.status(200).json({
+        success: true,
+        data: folders
+      });
     } catch (error) {
-      console.error('Error fetching folders:', error);
-      res.status(500).json({ error: 'Failed to fetch folders' });
+      console.error('Folder fetch error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
     }
   }
 
-  static async getFolderMessages(req, res) {
+  static async getEmailsByFolder(req, res) {
     try {
+      const token = req.token;
       const { folderId } = req.params;
-      const { accessToken, userId, outlookEmail } = req.body;
       
-      if (!accessToken || !userId || !outlookEmail || !folderId) {
-        return res.status(400).json({ 
-          message: "Missing required parameters" 
+      if (!token || !folderId) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required parameters'
         });
       }
 
-      const messages = await FolderService.fetchFolderMessages(
-        folderId, 
-        accessToken, 
-        userId, 
-        outlookEmail
-      );
-      res.status(200).json(messages);
+      console.log('Fetching emails for folder:', folderId);
+      const emails = await FolderService.getEmailsByFolder(token, folderId);
+      
+      console.log('Found emails:', emails?.length);
+      res.status(200).json({
+        success: true,
+        data: emails
+      });
     } catch (error) {
-      console.error('Error fetching folder messages:', error);
-      res.status(500).json({ error: 'Failed to fetch folder messages' });
+      console.error('Folder emails fetch error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
     }
   }
-} 
+}
+
+export default FolderController; 

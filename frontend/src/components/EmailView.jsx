@@ -24,13 +24,13 @@ const EmailView = () => {
 
   // Get email from location state
   const email = location.state?.email;
-  console.log('Email from location state:', email); // Log the email from location state
+  // console.log('Email from location state:', email); // Log the email from location state
 
   useEffect(() => {
     if (!email) {
       navigate('/emails');
     } else {
-      console.log('Setting email in store:', email); // Log the email object
+      // console.log('Setting email in store:', email); // Log the email object
       setEmail(email); 
       fetchAttachments(email.id); // Fetch attachments using the email ID
     }

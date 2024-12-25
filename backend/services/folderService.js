@@ -1,56 +1,69 @@
-import axios from 'axios';
-import { ElasticService } from './elasticService.js';
+import { Client } from '@microsoft/microsoft-graph-client';
+import 'isomorphic-fetch';
+import { retryWithBackoff } from '../utils/rateLimiter.js';
 
 class FolderService {
-  static async fetchFolders(accessToken, userId, outlookEmail) {
+  static createGraphClient(accessToken) {
+    return Client.init({
+      authProvider: (done) => {
+        done(null, accessToken);
+      },
+    });
+  }
+
+  static async getFolders(accessToken) {
     try {
-      const response = await axios.get(
-        'https://graph.microsoft.com/v1.0/me/mailFolders',
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      );
+      console.log('🔍 [Backend] Fetching folders from Graph API');
+      const graphClient = this.createGraphClient(accessToken);
+      
+      const response = await retryWithBackoff(async () => {
+        return graphClient.api('/me/mailFolders')
+          .select('id,displayName,parentFolderId,childFolderCount,unreadItemCount,totalItemCount')
+          .get();
+      });
 
-      const folders = response.data.value.map(folder => ({
+      console.log(`✅ [Backend] Retrieved ${response.value.length} folders`);
+      return response.value.map(folder => ({
         id: folder.id,
-        displayName: folder.displayName,
-        parentFolderId: folder.parentFolderId,
-        childFolderCount: folder.childFolderCount,
-        unreadItemCount: folder.unreadItemCount,
-        totalItemCount: folder.totalItemCount
+        name: folder.displayName,
+        parentId: folder.parentFolderId,
+        childCount: folder.childFolderCount,
+        unreadCount: folder.unreadItemCount,
+        totalCount: folder.totalItemCount
       }));
-
-      // Store folder information in Elasticsearch
-      await ElasticService.updateMailboxFolders(userId, outlookEmail, folders);
-
-      return {
-        '@odata.context': response.data['@odata.context'],
-        value: folders
-      };
     } catch (error) {
-      console.error('Error fetching folders:', error);
-      throw error;
+      console.error('❌ [Backend] Folder fetch error:', error);
+      throw new Error('Failed to fetch folders');
     }
   }
 
-  static async fetchFolderMessages(folderId, accessToken, userId, outlookEmail) {
+  static async getEmailsByFolder(accessToken, folderId, forceSync = false) {
     try {
-      const response = await axios.get(
-        `https://graph.microsoft.com/v1.0/me/mailFolders/${folderId}/messages`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      );
+      console.log('🔍 [Backend] Fetching emails for folder:', folderId, 'force:', forceSync);
+      const graphClient = this.createGraphClient(accessToken);
+      
+      const response = await retryWithBackoff(async () => {
+        return graphClient.api(`/me/mailFolders/${folderId}/messages`)
+          .select('id,subject,bodyPreview,from,receivedDateTime,isRead,isDraft')
+          .top(50)
+          .orderby('receivedDateTime desc')
+          .get();
+      });
 
-      await ElasticService.bulkIndexEmails(response.data.value, userId, outlookEmail);
-      return response.data;
+      console.log('📧 [Backend] Graph API response:', {
+        totalEmails: response.value.length,
+        sampleEmail: {
+          subject: response.value[0]?.subject,
+          from: response.value[0]?.from,
+          date: response.value[0]?.receivedDateTime
+        }
+      });
+      
+      console.log(`✅ [Backend] Found ${response.value.length} emails`);
+      return response.value;
     } catch (error) {
-      console.error('Error fetching folder messages:', error);
-      throw error;
+      console.error('❌ [Backend] Email fetch error:', error);
+      throw new Error('Failed to fetch folder emails');
     }
   }
 }
