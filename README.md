@@ -36,7 +36,10 @@ Launch both frontend and backend services:
 docker-compose build
 
 docker-compose up -d
-```  
+```
+
+Access the application in : http://localhost:3000/
+
  
 
 The application will be running at 3000 port in docker environment.
